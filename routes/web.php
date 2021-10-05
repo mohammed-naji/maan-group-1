@@ -1,8 +1,9 @@
 <?php
 
-use App\Http\Controllers\HomeController;
 use App\Models\Product;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\HomeController;
+use Mcamara\LaravelLocalization\Facades\LaravelLocalization;
 
 /*
 |--------------------------------------------------------------------------
@@ -15,6 +16,9 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
+Route::group(['prefix' => LaravelLocalization::setLocale()], function()
+{
+
 Route::get('/', function () {
     // return Product::all();
     $prod = Product::all();
@@ -25,4 +29,9 @@ Route::get('export-products', [HomeController::class, 'export']);
 
 Route::post('import', [HomeController::class, 'import'])->name('import');
 
+Route::get('image', [HomeController::class, 'image'])->name('image');
+Route::post('image', [HomeController::class, 'imageSubmit']);
 
+Route::get('blog', [HomeController::class, 'blog']);
+
+});

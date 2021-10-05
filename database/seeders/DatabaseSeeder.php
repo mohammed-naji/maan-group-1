@@ -25,6 +25,7 @@ class DatabaseSeeder extends Seeder
 
         Product::truncate();
         Product::factory(20)->create();
-        // $this->call(CategorySeeder::class);
+
+        $this->call(PostSeeder::class);
     }
 }

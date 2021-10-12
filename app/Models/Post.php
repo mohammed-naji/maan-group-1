@@ -38,4 +38,9 @@ class Post extends Model
         $lang = app()->currentLocale();
         return json_decode($this->content)->$lang;
     }
+
+    function comments()
+    {
+        return $this->morphMany(Comment::class, 'commentable');
+    }
 }

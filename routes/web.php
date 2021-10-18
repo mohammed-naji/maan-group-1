@@ -1,10 +1,12 @@
 <?php
 
+use App\Models\Post;
+use App\Models\User;
 use App\Models\Product;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\HomeController;
-use App\Models\Post;
-use App\Models\User;
+use App\Http\Controllers\PostController;
+use App\Notifications\UserRegisterNotification;
 use Mcamara\LaravelLocalization\Facades\LaravelLocalization;
 
 /*
@@ -39,15 +41,17 @@ Route::get('/', function () {
 
     $user = User::find(2);
 
+    $user->notify(new UserRegisterNotification);
+
     // $user->courses()->attach([2]); // Add new value to the database with redandancy
     // $user->courses()->detach([2]); // Remove value from data
     // $user->courses()->sync([2, 5, 9]); // Insert if the value not exisit And Remove the value if removed from array
 
-    return $user->courses;
+    // return $user->courses;
 
-    foreach($user->courses as $course) {
-        echo $course->student->user_id . "<br>";
-    }
+    // foreach($user->courses as $course) {
+    //     echo $course->student->user_id . "<br>";
+    // }
 
     exit;
 
@@ -62,5 +66,7 @@ Route::get('image', [HomeController::class, 'image'])->name('image');
 Route::post('image', [HomeController::class, 'imageSubmit']);
 
 Route::get('blog', [HomeController::class, 'blog']);
+
+Route::resource('posts', PostController::class);
 
 });

@@ -21,7 +21,19 @@
                 </form>
             </div>
             <div class="col-8">
-                Table
+                <table class="table table-bordered" id="table_data">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Title</th>
+                            <th>Content</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+
+                    </tbody>
+                </table>
             </div>
         </div>
     </div>
@@ -29,6 +41,31 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
+
+        getData();
+        function getData() {
+            $('#table_data tbody').html('');
+            $.ajax({
+                type: 'get',
+                url: '{{ route("posts.getData") }}',
+                success: function(res) {
+                    $.each(res, function(key, post) {
+                        let row = `
+                            <tr>
+                                <td>${post.id}</td>
+                                <td>${post.title}</td>
+                                <td>${post.content}</td>
+                                <td>
+                                    <button class="btn btn-primary btn-sm">Edit</button>
+                                    <button class="btn btn-danger btn-sm">Delete</button>
+                                </td>
+                            </tr>
+                        `;
+                        $('#table_data tbody').append(row)
+                    })
+                }
+            })
+        }
 
         $('#form_data').submit(function(e) {
             e.preventDefault();
@@ -47,6 +84,19 @@
                 url: '{{ route("posts.store") }}',
                 success: function(res) {
                     // alert('Done');
+                    // getData();
+                    let row = `
+                            <tr>
+                                <td>${res.post.id}</td>
+                                <td>${res.post.title}</td>
+                                <td>${res.post.content}</td>
+                                <td>
+                                    <button class="btn btn-primary btn-sm">Edit</button>
+                                    <button class="btn btn-danger btn-sm">Delete</button>
+                                </td>
+                            </tr>
+                        `;
+                        $('#table_data tbody').prepend(row)
                     $('#form_data').trigger('reset');
                 },
                 error: function() {

@@ -68,5 +68,6 @@ Route::post('image', [HomeController::class, 'imageSubmit']);
 Route::get('blog', [HomeController::class, 'blog']);
 
 Route::resource('posts', PostController::class);
+Route::get('getData', [PostController::class, 'getData'])->name('posts.getData');
 
 });

@@ -31,7 +31,6 @@
                         </tr>
                     </thead>
                     <tbody>
-
                     </tbody>
                 </table>
             </div>
@@ -41,6 +40,34 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
+
+
+        // $('.btn-delete').on('click', function() {
+        //     alert(5);
+        // });
+
+        $('#table_data').on('click', '.btn-delete', function() {
+            var id = $(this).data('id'); // data-id
+            var btn = $(this);
+
+            if(confirm('Are You Sure ?!')) {
+                $.ajax({
+                    type: 'delete',
+                    url: '{{ route("posts.index") }}/'+id,
+                    data: {
+                        _token: '{{ csrf_token() }}'
+                    },
+                    success: function(res) {
+                        btn.parents('tr').remove();
+                    },
+                    error: function() {
+
+                    }
+                });
+            }
+
+        });
+
 
         getData();
         function getData() {
@@ -57,7 +84,7 @@
                                 <td>${post.content}</td>
                                 <td>
                                     <button class="btn btn-primary btn-sm">Edit</button>
-                                    <button class="btn btn-danger btn-sm">Delete</button>
+                                    <button data-id="${post.id}" class="btn btn-danger btn-sm btn-delete">Delete</button>
                                 </td>
                             </tr>
                         `;

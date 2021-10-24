@@ -17,7 +17,7 @@
                     @csrf
                     <input type="text" id="title" name="title" placeholder="Title" class="form-control mb-3">
                     <textarea name="content" id="content" placeholder="Content" rows="5" class="form-control mb-3"></textarea>
-                    <button class="btn btn-dark">Add</button>
+                    <button class="btn btn-dark btn-add">Add</button>
                 </form>
             </div>
             <div class="col-8">
@@ -41,10 +41,34 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
 
+        $('#form_data').on('click', '.btn-add', function(e) {
+            e.preventDefault();
 
-        // $('.btn-delete').on('click', function() {
-        //     alert(5);
-        // });
+            // var data = new FormData($('#form_data')[0]);
+            var title = $('#title').val();
+            var content = $('#content').val();
+
+            $.ajax({
+                type: 'POST',
+                data: {
+                    _token: '{{ csrf_token() }}',
+                    title: title,
+                    content: content
+                },
+                url: '{{ route("posts.store") }}',
+                success: function(response) {
+                    // alert('Done');
+                    // getData();
+                    add_row(response.post)
+                    $('#form_data').trigger('reset');
+                },
+                error: function() {
+
+                }
+            })
+        })
+
+        getData();
 
         $('#table_data').on('click', '.btn-delete', function() {
             var id = $(this).data('id'); // data-id
@@ -60,16 +84,66 @@
                     success: function(res) {
                         btn.parents('tr').remove();
                     },
-                    error: function() {
-
+                    error: function(e) {
+                        console.log(e);
                     }
                 });
             }
 
         });
 
+        $('#table_data').on('click', '.btn-edit', function() {
+            var id = $(this).data('id');
+            var btn = $(this);
 
-        getData();
+            var title = btn.parents('tr').find('.title').text();
+            var content = btn.parents('tr').find('.content').text();
+
+            var url = '{{ route("posts.index") }}/'+id;
+            $('#form_data').attr('action', url)
+
+            $('#title').val(title);
+            $('#content').val(content);
+
+            $('form button').text('Update');
+            $('form button').removeClass('btn-add');
+            $('form button').addClass('btn-update');
+        })
+
+        $('#form_data').on('click', '.btn-update', function(e) {
+            e.preventDefault();
+
+            var title = $('#title').val();
+            var content = $('#content').val();
+            var url = $('#form_data').attr('action');
+
+            $.ajax({
+                type: 'put',
+                url: url,
+                data:{
+                    _token: '{{ csrf_token() }}',
+                    title: title,
+                    content: content
+                },
+                success: function(res) {
+
+
+                    // Update record data
+
+                    $('#row-' + res.id).find('.title').text(res.title);
+                    $('#row-' + res.id).find('.content').text(res.content);
+
+
+                    $('#form_data').trigger('reset');
+                    $('form button').text('Add');
+                    $('form button').addClass('btn-add');
+                    $('form button').removeClass('btn-update');
+
+                }
+            })
+
+        })
+
         function getData() {
             $('#table_data tbody').html('');
             $.ajax({
@@ -77,60 +151,26 @@
                 url: '{{ route("posts.getData") }}',
                 success: function(res) {
                     $.each(res, function(key, post) {
-                        let row = `
-                            <tr>
-                                <td>${post.id}</td>
-                                <td>${post.title}</td>
-                                <td>${post.content}</td>
-                                <td>
-                                    <button class="btn btn-primary btn-sm">Edit</button>
-                                    <button data-id="${post.id}" class="btn btn-danger btn-sm btn-delete">Delete</button>
-                                </td>
-                            </tr>
-                        `;
-                        $('#table_data tbody').append(row)
+                        add_row(post);
                     })
                 }
             })
         }
 
-        $('#form_data').submit(function(e) {
-            e.preventDefault();
-
-            // var data = new FormData($('#form_data')[0]);
-            var title = $('#title').val();
-            var content = $('#content').val();
-
-            $.ajax({
-                type: 'POST',
-                data: {
-                    _token: '{{ csrf_token() }}',
-                    title: title,
-                    content: content
-                },
-                url: '{{ route("posts.store") }}',
-                success: function(res) {
-                    // alert('Done');
-                    // getData();
-                    let row = `
-                            <tr>
-                                <td>${res.post.id}</td>
-                                <td>${res.post.title}</td>
-                                <td>${res.post.content}</td>
-                                <td>
-                                    <button class="btn btn-primary btn-sm">Edit</button>
-                                    <button class="btn btn-danger btn-sm">Delete</button>
-                                </td>
-                            </tr>
-                        `;
-                        $('#table_data tbody').prepend(row)
-                    $('#form_data').trigger('reset');
-                },
-                error: function() {
-
-                }
-            })
-        })
+        function add_row(post) {
+            let row = `
+                <tr id="row-${post.id}">
+                    <td class="id">${post.id}</td>
+                    <td class="title">${post.title}</td>
+                    <td class="content">${post.content}</td>
+                    <td>
+                        <button data-id="${post.id}" class="btn btn-primary btn-sm btn-edit">Edit</button>
+                        <button data-id="${post.id}" class="btn btn-danger btn-sm btn-delete">Delete</button>
+                    </td>
+                </tr>
+            `;
+            $('#table_data tbody').append(row)
+        }
 
     </script>
 

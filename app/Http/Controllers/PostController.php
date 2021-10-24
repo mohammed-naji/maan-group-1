@@ -36,7 +36,7 @@ class PostController extends Controller
     public function store(Request $request)
     {
         $post = Post::create($request->all());
-        return response()->json(['status' => 200, 'post' => $post]);
+        return response()->json(['status' => 200, 'post' => $post, 'action' => 'done']);
         // return redirect()->back();
     }
 
@@ -69,9 +69,10 @@ class PostController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, Post $post)
     {
-        //
+        $post->update($request->all());
+        return $post;
     }
 
     /**

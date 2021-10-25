@@ -90,4 +90,36 @@ class PostController extends Controller
     {
         return Post::latest()->get();
     }
+
+    public function search()
+    {
+        return view('posts.search');
+    }
+
+    public function search_post()
+    {
+        $keyword = request()->k;
+        $posts = Post::where('title', 'like', "%$keyword%")->orWhere('content', 'like', "%$keyword%")->get();
+        return $posts;
+    }
+
+    public function search2()
+    {
+        return view('posts.search2');
+    }
+
+    public function search_post2()
+    {
+        $keyword = request()->k;
+        $posts = Post::where('title', 'like', "%$keyword%")
+        ->orWhere('content', 'like', "%$keyword%")
+        ->get()
+        ->map(function($post) {
+            return [
+                'title' => $post->title,
+                'url' => route('posts.show', $post->id)
+            ];
+        });
+        return $posts;
+    }
 }

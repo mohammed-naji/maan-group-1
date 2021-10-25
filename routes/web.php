@@ -70,4 +70,10 @@ Route::get('blog', [HomeController::class, 'blog']);
 Route::resource('posts', PostController::class);
 Route::get('getData', [PostController::class, 'getData'])->name('posts.getData');
 
+Route::get('search', [PostController::class, 'search'])->name('search');
+Route::get('search_post', [PostController::class, 'search_post'])->name('search_post');
+
+Route::get('search2', [PostController::class, 'search2'])->name('search2');
+Route::get('search_post2', [PostController::class, 'search_post2'])->name('search_post2');
+
 });

@@ -122,4 +122,9 @@ class PostController extends Controller
         });
         return $posts;
     }
+
+    public function posts_api()
+    {
+        return view('posts.posts_api');
+    }
 }

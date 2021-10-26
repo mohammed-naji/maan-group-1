@@ -76,4 +76,6 @@ Route::get('search_post', [PostController::class, 'search_post'])->name('search_
 Route::get('search2', [PostController::class, 'search2'])->name('search2');
 Route::get('search_post2', [PostController::class, 'search_post2'])->name('search_post2');
 
+Route::get('posts-api', [PostController::class, 'posts_api']);
+
 });

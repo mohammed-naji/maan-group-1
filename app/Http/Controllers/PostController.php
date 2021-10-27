@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Post;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 
 class PostController extends Controller
 {
@@ -126,5 +127,29 @@ class PostController extends Controller
     public function posts_api()
     {
         return view('posts.posts_api');
+    }
+
+    public function ajax_file()
+    {
+        return view('posts.ajax_file');
+    }
+
+    public function ajax_file_store(Request $request)
+    {
+        // $request->validate(['file' => 'required']);
+        $valid = Validator::make($request->all(), [
+            'file' => 'required|image|mimes:png,jpg',
+        ]);
+        if($valid->fails()) {
+            $errors = $valid->errors();
+            return view('posts.errors', compact('errors'))->render();
+        }
+
+        $file = $request->file('file');
+        $ex = $file->getClientOriginalExtension();
+        $new_name = rand().'_'.rand().'.'.$ex;
+        $file->move(public_path('files'), $new_name);
+
+        return "<img src='" . asset("files/$new_name") . "' />";
     }
 }

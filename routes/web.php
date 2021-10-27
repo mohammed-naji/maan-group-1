@@ -78,4 +78,7 @@ Route::get('search_post2', [PostController::class, 'search_post2'])->name('searc
 
 Route::get('posts-api', [PostController::class, 'posts_api']);
 
+Route::get('ajax-file', [PostController::class, 'ajax_file']);
+Route::post('ajax-file', [PostController::class, 'ajax_file_store'])->name('ajax_file_store');
+
 });
